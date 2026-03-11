@@ -7,8 +7,6 @@ export default function App() {
     <View style={styles.container}>
       <Text>Dit is een component!</Text>
       <ProductCard />
-      <ProductCard />
-      <ProductCard />
       <StatusBar style="auto" />
     </View>
   );
