@@ -1,10 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import ProductCard from './components/ProductCard';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text>Dit is een component!</Text>
+      <ProductCard />
+      <ProductCard />
+      <ProductCard />
       <StatusBar style="auto" />
     </View>
   );
