@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, Button, TextInput, Pressable, ScrollView, Switch} from "react-native";
+import { View, Text, Image, StyleSheet, Button, TextInput, Pressable, ScrollView, Switch, TouchableOpacity} from "react-native";
+import {useNavigation} from '@react-navigation/native';
 
 const ProductCard = ({ product }) => {
     const [isEnabled, setIsEnabled] = useState(false);
     const [timesPressed, setTimesPressed] = useState(0);
 
     const toggleSwitch = () => setIsEnabled(!isEnabled);
+    const navigation = useNavigation();
 
     return (
         <View style={styles.card}>
             <Image
-                source={require("../images/556409BB-02E0-4BA3-BC16-F409F609FCED.avif")}
+                source={require("../images/pizza-marinara.avif")}
                 style={styles.image}
             />
         <Text style={styles.title}>Pizza Marinara</Text>
@@ -20,14 +22,6 @@ const ProductCard = ({ product }) => {
           onPress={() => alert("Product added to cart!")}
           title="Buy me!"
           color="#ff0000"
-        />
-
-        <TextInput
-            style={styles.input}
-            onChangeText={() => alert("Text changed!")}
-            value={() => alert("Text changed!")}
-            placeholder="useless placeholder"
-            keyboardType="numeric"
         />
 
         <Pressable
@@ -41,9 +35,15 @@ const ProductCard = ({ product }) => {
             styles.wrapperCustom,
           ]}>
           {({pressed}) => (
-            <Text style={styles.text}>{pressed ? 'Pressed!' : 'Press Me'}</Text>
+            <Text style={styles.text}>{pressed ? 'Ik ben overheerlijk!' : 'Druk op mij...'}</Text>
           )}
         </Pressable>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Details')}
+        >
+          <Text style={styles.buttonText}>Bekijk product</Text>
+        </TouchableOpacity>
 
         <Switch
           trackColor={{false: '#767577', true: '#81b0ff'}}
