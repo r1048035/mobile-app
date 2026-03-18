@@ -43,7 +43,7 @@ const ProductCard = ({ title, description, price, image, onPress }) => {
 */}
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('Details')}
+          onPress={onPress}
         >
           <Text style={styles.buttonText}>Bekijk product</Text>
         </TouchableOpacity>

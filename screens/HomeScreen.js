@@ -1,8 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, na } from 'react-native';
 import ProductCard from '../components/ProductCard';
 
+import {useNavigation} from '@react-navigation/native';
+
 const HomeScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome</Text>
@@ -20,6 +24,15 @@ const HomeScreen = () => {
           description="Tomatensaus, knoflook, oregano en olijfolie"
           price="12.99"
           image={require("../images/pizza-marinara.avif")}
+          
+          onPress={() =>
+            navigation.navigate("Details", {
+              title: "Pizza Marinara",
+              description: "Tomatensaus, knoflook, oregano en olijfolie",
+              price: "12.99",
+              image: require("../images/pizza-marinara.avif")
+            })
+          }
         />
 
         <ProductCard 
@@ -27,6 +40,15 @@ const HomeScreen = () => {
           description="Drank"
           price="8.99"
           image={require("../images/pizza-marinara.avif")}
+
+          onPress={() =>
+            navigation.navigate("Details", {
+              title: "Limoncello",
+              description: "Drank",
+              price: "8.99",
+              image: require("../images/pizza-marinara.avif")
+            })
+          }
         />
         
         <ProductCard 
@@ -34,6 +56,15 @@ const HomeScreen = () => {
           description="Dessert"
           price="6.99"
           image={require("../images/pizza-marinara.avif")}
+
+          onPress={() =>
+            navigation.navigate("Details", {
+              title: "Tiramisu",
+              description: "Dessert",
+              price: "6.99",
+              image: require("../images/pizza-marinara.avif")
+            })
+          }
         />
 
       </ScrollView>
