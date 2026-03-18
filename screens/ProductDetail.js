@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import ProductCard from '../components/ProductCard';
 import { useState } from 'react';
 
 const ProductDetail = ({ route }) => {
-    const { title, description, price, image } = route.params;
+  const { title, description, price, image } = route.params;
 
     const [quantity, setQuantity] = useState(1);
+  const numericPrice = Number.parseFloat(price);
 
     const increaseQuantity = () => setQuantity(quantity + 1);
     const decreaseQuantity = () => {
@@ -20,7 +20,7 @@ const ProductDetail = ({ route }) => {
 
       <ScrollView style={styles.scrollView}>
 
-        <Text style={styles.title}>Dit is de product detail pagina!</Text>
+        <Text style={styles.pageTitle}>Dit is de product detail pagina</Text>
 
         <Image
             source={image}
@@ -43,7 +43,7 @@ const ProductDetail = ({ route }) => {
 
         </View>
 
-        <Text style={styles.totalPrice}>Totaal: € {price * quantity}</Text>
+        <Text style={styles.totalPrice}>Totaal: EUR {(numericPrice * quantity).toFixed(2)}</Text>
 
       </ScrollView>
 
@@ -56,13 +56,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   scrollView: {
     flex: 1,
     backgroundColor: '#f5f5f5',
     padding: 20,
+  },
+  pageTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 14,
   },
   title: {
     fontSize: 24,
@@ -81,6 +84,32 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginTop: 20,
+  },
+
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  quantityButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  quantityButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  quantityText: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  totalPrice: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginTop: 16,
   },
 
 });
