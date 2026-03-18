@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, Button, TextInput, Pressable, ScrollView, Switch, TouchableOpacity} from "react-native";
 import {useNavigation} from '@react-navigation/native';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ title, description, price, image, onPress }) => {
     const [isEnabled, setIsEnabled] = useState(false);
     const [timesPressed, setTimesPressed] = useState(0);
 
@@ -11,19 +11,21 @@ const ProductCard = ({ product }) => {
 
     return (
         <View style={styles.card}>
+
             <Image
-                source={require("../images/pizza-marinara.avif")}
+                source={image}
                 style={styles.image}
             />
-        <Text style={styles.title}>Pizza Marinara</Text>
-        <Text style={styles.description}>Tomatensaus, knoflook, oregano en olijfolie</Text>
 
-        <Button
-          onPress={() => alert("Product added to cart!")}
-          title="Buy me!"
-          color="#ff0000"
-        />
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.price}>€ {price}</Text>
 
+        <TouchableOpacity style={styles.button} onPress={onPress}>
+          <Text style={styles.buttonText}>Koop mij!</Text>
+        </TouchableOpacity>
+
+{/*
         <Pressable
           onPress={() => {
             setTimesPressed(current => current + 1);
@@ -38,6 +40,7 @@ const ProductCard = ({ product }) => {
             <Text style={styles.text}>{pressed ? 'Ik ben overheerlijk!' : 'Druk op mij...'}</Text>
           )}
         </Pressable>
+*/}
 
         <TouchableOpacity
           onPress={() => navigation.navigate('Details')}
@@ -45,6 +48,7 @@ const ProductCard = ({ product }) => {
           <Text style={styles.buttonText}>Bekijk product</Text>
         </TouchableOpacity>
 
+{/*
         <Switch
           trackColor={{false: '#767577', true: '#81b0ff'}}
           thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
@@ -52,6 +56,7 @@ const ProductCard = ({ product }) => {
           onValueChange={toggleSwitch}
           value={isEnabled}
         />
+*/}
 
         
         </View>

@@ -14,9 +14,28 @@ const HomeScreen = () => {
         />
 
       <ScrollView style={styles.scrollView}>
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+
+        <ProductCard 
+          title="Pizza Marinara"
+          description="Tomatensaus, knoflook, oregano en olijfolie"
+          price="12.99"
+          image={require("../images/pizza-marinara.avif")}
+        />
+
+        <ProductCard 
+          title="Limoncello"
+          description="Drank"
+          price="8.99"
+          image={require("../images/pizza-marinara.avif")}
+        />
+        
+        <ProductCard 
+          title="Tiramisu"
+          description="Dessert"
+          price="6.99"
+          image={require("../images/pizza-marinara.avif")}
+        />
+
       </ScrollView>
       <StatusBar style="auto" />
     </View>
