@@ -92,10 +92,13 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   quantityButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
+    backgroundColor: '#009246',
+    width: 40,
+    height: 40,
     borderRadius: 5,
     marginHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   quantityButtonText: {
     color: '#fff',
@@ -106,6 +109,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
   },
+  
   totalPrice: {
     fontSize: 20,
     fontWeight: '700',
