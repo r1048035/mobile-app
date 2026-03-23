@@ -74,7 +74,7 @@ const HomeScreen = () => {
             description={product.description}
             price={product.price}
             image={product.image}
-            onPress={() => navigation.navigate('ProductDetail', product)}
+            onPress={() => navigation.navigate('Detail', { type: 'product', ...product })}
           />
         ))}
 
@@ -86,7 +86,7 @@ const HomeScreen = () => {
             title={blog.title}
             description={blog.description}
             image={blog.image}
-            onPress={() => navigation.navigate('BlogDetail', blog)}
+            onPress={() => navigation.navigate('Detail', { type: 'blog', ...blog })}
           />
         ))}
       </ScrollView>
