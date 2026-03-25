@@ -1,8 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, } from 'react-native';
 import { useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import BlogCard from '../components/BlogCard';
+import { Picker } from "@react-native-picker/picker";
+
+const categoryNames = {
+  "": "Alle categorieën",
+  "69b074b933c2f1716a1cf906": "Formaggi",
+  "69b0748c98be6bb1bdf07701": "Antipasti",
+  "69b07349c5c024f4c12a09e3": "Dolci",
+  "699f18194936e53ef79344ad": "Pizza",
+  "699f142c323edf49db15598a": "Bevande",
+  "699efdf86df30dae63659101": "Pasta",
+};
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,6 +21,7 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     fetch('https://api.webflow.com/v2/sites/698c7fc061b94a8c45a87d49/products', {
@@ -19,20 +31,32 @@ const HomeScreen = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const fetchedProducts = (data.items || []).map((item) => ({
-          id: item.product.id,
-          title: item.product.fieldData.name,
-          description: item.product.fieldData.subtitle,
-          price: ((item.skus[0]?.fieldData.price?.value || 0) / 100).toFixed(2),
-          image: { uri: item.skus[0]?.fieldData['main-image']?.url },
-        }));
+        const fetchedProducts = (data.items || []).map((item) => {
+          const product = item?.product || {};
+          const productFieldData = product?.fieldData || {};
+          const firstCategoryId = Array.isArray(productFieldData.category)
+            ? productFieldData.category[0]
+            : undefined;
+          const imageUrl = item?.skus?.[0]?.fieldData?.['main-image']?.url;
 
-        if (fetchedProducts.length > 0) {
-          setProducts(fetchedProducts);
-        }
+          return {
+            id: product?.id || item?.id,
+            title: productFieldData.name || 'Onbekend product',
+            description: productFieldData.subtitle || '',
+            price: ((item?.skus?.[0]?.fieldData?.price?.value || 0) / 100).toFixed(2),
+            image: imageUrl ? { uri: imageUrl } : null,
+            category: categoryNames[firstCategoryId] || 'Onbekende categorie',
+          };
+        });
+
+        setProducts(fetchedProducts);
       })
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
+
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    : products;
 
   useEffect(() => {
     fetch('https://api.webflow.com/v2/sites/698c7fc061b94a8c45a87d49/collections/699ef930d19e910d99fbc818/items', {
@@ -74,10 +98,24 @@ const HomeScreen = () => {
 
       <TextInput style={styles.input} placeholder="Typ hier om te zoeken..." />
 
+      <Picker
+        selectedValue={selectedCategory}
+        onValueChange={setSelectedCategory}
+        style={styles.picker}
+      >
+        <Picker.Item label="Alle categorieën" value="" />
+        <Picker.Item label="Formaggi" value="Formaggi" />
+        <Picker.Item label="Antipasti" value="Antipasti" />
+        <Picker.Item label="Dolci" value="Dolci" />
+        <Picker.Item label="Pizza" value="Pizza" />
+        <Picker.Item label="Bevande" value="Bevande" />
+        <Picker.Item label="Pasta" value="Pasta" />
+      </Picker>
+
       <ScrollView style={styles.scrollView}>
         <Text style={styles.sectionTitle}>Producten</Text>
 
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard
             key={product.id}
             title={product.title}
