@@ -145,7 +145,7 @@ const HomeScreen = () => {
       <ScrollView style={styles.scrollView}>
         <Text style={styles.sectionTitle}>Producten</Text>
 
-        {filteredProducts.map((product) => (
+        {sortedProducts.map((product) => (
           <ProductCard
             key={product.id}
             title={product.title}
