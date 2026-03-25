@@ -22,6 +22,8 @@ const HomeScreen = () => {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("price-asc");
 
   useEffect(() => {
     fetch('https://api.webflow.com/v2/sites/698c7fc061b94a8c45a87d49/products', {
@@ -54,9 +56,19 @@ const HomeScreen = () => {
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
 
-  const filteredProducts = selectedCategory
-    ? products.filter((product) => product.category === selectedCategory)
-    : products;
+  const filteredProducts = products.filter(
+    (p) =>
+      (selectedCategory === "" || p.category === selectedCategory) &&
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortOption === "price-asc") return a.price - b.price;
+    if (sortOption === "price-desc") return b.price - a.price;
+    if (sortOption === "name-asc") return a.title.localeCompare(b.title);
+    if (sortOption === "name-desc") return b.title.localeCompare(a.title);
+    return 0;
+  });
 
   useEffect(() => {
     fetch('https://api.webflow.com/v2/sites/698c7fc061b94a8c45a87d49/collections/699ef930d19e910d99fbc818/items', {
@@ -96,7 +108,12 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Welkom</Text>
 
-      <TextInput style={styles.input} placeholder="Typ hier om te zoeken..." />
+      <TextInput
+        style={styles.input}
+        placeholder="Eten zoeken..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
 
       <Picker
         selectedValue={selectedCategory}
@@ -110,6 +127,19 @@ const HomeScreen = () => {
         <Picker.Item label="Pizza" value="Pizza" />
         <Picker.Item label="Bevande" value="Bevande" />
         <Picker.Item label="Pasta" value="Pasta" />
+      </Picker>
+
+
+
+      <Picker
+        selectedValue={sortOption}
+        onValueChange={setSortOption}
+        style={styles.picker}
+      >
+        <Picker.Item label="Prijs: laag naar hoog" value="price-asc" />
+        <Picker.Item label="Prijs: hoog naar laag" value="price-desc" />
+        <Picker.Item label="Naam: A-Z" value="name-asc" />
+        <Picker.Item label="Naam: Z-A" value="name-desc" />
       </Picker>
 
       <ScrollView style={styles.scrollView}>
