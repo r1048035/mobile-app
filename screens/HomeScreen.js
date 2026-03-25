@@ -129,7 +129,7 @@ const HomeScreen = () => {
         <Picker.Item label="Pasta" value="Pasta" />
       </Picker>
 
-
+      
 
       <Picker
         selectedValue={sortOption}
