@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 const BlogCard = ({ title, description, image, onPress }) => {
     return (
         <View style={styles.card}>
-            <Image source={image} style={styles.image} />
+            {image ? <Image source={image} style={styles.image} /> : null}
 
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.description}>{description}</Text>

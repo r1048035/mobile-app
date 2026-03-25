@@ -1,68 +1,78 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
+import { useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import BlogCard from '../components/BlogCard';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [products, setProducts] = useState([]);
+  const [blogs, setBlogs] = useState([]);
 
-  const products = [
-    {
-      id: 'p1',
-      title: 'Pizza Marinara',
-      description: 'Tomatensaus, knoflook, oregano en olijfolie',
-      price: '12.99',
-      image: require('../images/pizza-marinara.avif'),
-    },
-    {
-      id: 'p2',
-      title: 'Limoncello',
-      description: 'Frisse Italiaanse likeur na het eten',
-      price: '8.99',
-      image: require('../images/limoncello.jpeg'),
-    },
-    {
-      id: 'p3',
-      title: 'Tiramisu',
-      description: 'Klassiek Italiaans dessert met mascarpone',
-      price: '6.99',
-      image: require('../images/tiramisu.jpg'),
-    },
-  ];
+  useEffect(() => {
+    fetch('https://api.webflow.com/v2/sites/698c7fc061b94a8c45a87d49/products', {
+      headers: {
+        Authorization: 'Bearer 242e97474e2d0ecb8729e4188e87ff5639077712648c44ec36538093abf1cd4c',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const fetchedProducts = (data.items || []).map((item) => ({
+          id: item.product.id,
+          title: item.product.fieldData.name,
+          description: item.product.fieldData.subtitle,
+          price: ((item.skus[0]?.fieldData.price?.value || 0) / 100).toFixed(2),
+          image: { uri: item.skus[0]?.fieldData['main-image']?.url },
+        }));
 
-  const blogs = [
-    {
-      id: 'b1',
-      title: 'Hoe maak je perfecte pizzabodem?',
-      description: '5 tips voor een krokante bodem zoals in Napels.',
-      image: require('../images/pizza-marinara.avif'),
-      author: 'Chef Marco',
-      date: '18 maart 2026',
-      content:
-        'Gebruik sterke bloem, geef het deeg voldoende rust en bak op hoge temperatuur voor de beste textuur.',
-    },
-    {
-      id: 'b2',
-      title: 'De geschiedenis van tiramisu',
-      description: 'Van Veneto tot wereldwijd favoriet dessert.',
-      image: require('../images/tiramisu.jpg'),
-      author: 'Giulia Rossi',
-      date: '12 maart 2026',
-      content:
-        'Tiramisu ontstond in Noord-Italie en werd geliefd door de combinatie van koffie, cacao en mascarpone.',
-    },
-  ];
+        if (fetchedProducts.length > 0) {
+          setProducts(fetchedProducts);
+        }
+      })
+      .catch((error) => console.error('Error fetching products:', error));
+  }, []);
+
+  useEffect(() => {
+    fetch('https://api.webflow.com/v2/sites/698c7fc061b94a8c45a87d49/collections/699ef930d19e910d99fbc818/items', {
+      headers: {
+        Authorization: 'Bearer 242e97474e2d0ecb8729e4188e87ff5639077712648c44ec36538093abf1cd4c',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const fetchedBlogs = (data.items || []).map((item) => {
+          const fieldData = item.fieldData || {};
+          const rawImage =
+            fieldData['main-image'] ||
+            fieldData.image ||
+            fieldData.thumbnail ||
+            fieldData.heroImage;
+
+          return {
+            id: item.id,
+            title: fieldData.name || fieldData.title || 'Blog',
+            description: fieldData.summary || fieldData.description || fieldData.subtitle || '',
+            author: fieldData.author || 'Onbekende auteur',
+            date: fieldData.date || fieldData['publish-date'] || '',
+            content: fieldData['post-body'] || fieldData.content || '',
+            image: rawImage?.url ? { uri: rawImage.url } : null,
+          };
+        });
+
+        if (fetchedBlogs.length > 0) {
+          setBlogs(fetchedBlogs);
+        }
+      })
+      .catch((error) => console.error('Error fetching blogs:', error));
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welkom</Text>
-      
-        <TextInput
-            style={styles.input}
-            placeholder="Typ hier om te zoeken..."
-        />
+
+      <TextInput style={styles.input} placeholder="Typ hier om te zoeken..." />
 
       <ScrollView style={styles.scrollView}>
         <Text style={styles.sectionTitle}>Producten</Text>
@@ -93,7 +103,7 @@ const HomeScreen = () => {
       <StatusBar style="auto" />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
