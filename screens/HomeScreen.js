@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, TextInput, } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Button, Switch } from 'react-native';
 import { useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import BlogCard from '../components/BlogCard';
@@ -24,6 +24,7 @@ const HomeScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("price-asc");
+  const [showBlogs, setShowBlogs] = useState(true);
 
   useEffect(() => {
     fetch('https://api.webflow.com/v2/sites/698c7fc061b94a8c45a87d49/products', {
@@ -104,46 +105,75 @@ const HomeScreen = () => {
       .catch((error) => console.error('Error fetching blogs:', error));
   }, []);
 
+  const resetControls = () => {
+    setSearchQuery('');
+    setSelectedCategory('');
+    setSortOption('price-asc');
+    setShowBlogs(true);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welkom</Text>
+      <Text style={styles.title}>Welkom bij Bella Italia</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Eten zoeken..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
+      <View style={styles.controlsCard}>
+        <TextInput
+          style={styles.input}
+          placeholder="Eten zoeken..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
 
-      <Picker
-        selectedValue={selectedCategory}
-        onValueChange={setSelectedCategory}
-        style={styles.picker}
-      >
-        <Picker.Item label="Alle categorieën" value="" />
-        <Picker.Item label="Formaggi" value="Formaggi" />
-        <Picker.Item label="Antipasti" value="Antipasti" />
-        <Picker.Item label="Dolci" value="Dolci" />
-        <Picker.Item label="Pizza" value="Pizza" />
-        <Picker.Item label="Bevande" value="Bevande" />
-        <Picker.Item label="Pasta" value="Pasta" />
-      </Picker>
+        <View style={styles.pickerRow}>
+          <View style={styles.pickerBox}>
+            <Text style={styles.label}>Categorie</Text>
+            <Picker
+              selectedValue={selectedCategory}
+              onValueChange={setSelectedCategory}
+              style={styles.picker}
+            >
+              <Picker.Item label="Alle categorieën" value="" />
+              <Picker.Item label="Formaggi" value="Formaggi" />
+              <Picker.Item label="Antipasti" value="Antipasti" />
+              <Picker.Item label="Dolci" value="Dolci" />
+              <Picker.Item label="Pizza" value="Pizza" />
+              <Picker.Item label="Bevande" value="Bevande" />
+              <Picker.Item label="Pasta" value="Pasta" />
+            </Picker>
+          </View>
 
-      
+          <View style={styles.pickerBox}>
+            <Text style={styles.label}>Sorteer</Text>
+            <Picker
+              selectedValue={sortOption}
+              onValueChange={setSortOption}
+              style={styles.picker}
+            >
+              <Picker.Item label="Prijs oplopend" value="price-asc" />
+              <Picker.Item label="Prijs aflopend" value="price-desc" />
+              <Picker.Item label="Naam A-Z" value="name-asc" />
+              <Picker.Item label="Naam Z-A" value="name-desc" />
+            </Picker>
+          </View>
+        </View>
 
-      <Picker
-        selectedValue={sortOption}
-        onValueChange={setSortOption}
-        style={styles.picker}
-      >
-        <Picker.Item label="Prijs: laag naar hoog" value="price-asc" />
-        <Picker.Item label="Prijs: hoog naar laag" value="price-desc" />
-        <Picker.Item label="Naam: A-Z" value="name-asc" />
-        <Picker.Item label="Naam: Z-A" value="name-desc" />
-      </Picker>
+        <View style={styles.switchRow}>
+          <Text style={styles.switchLabel}>Toon blogs</Text>
+          <Switch
+            value={showBlogs}
+            onValueChange={setShowBlogs}
+            trackColor={{ false: '#cbd5e1', true: '#86efac' }}
+            thumbColor={showBlogs ? '#16a34a' : '#94a3b8'}
+          />
+        </View>
+
+        <View style={styles.buttonWrap}>
+          <Button title="Reset filters" onPress={resetControls} color="#0f766e" />
+        </View>
+      </View>
 
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.sectionTitle}>Producten</Text>
+        <Text style={styles.sectionTitle}>Producten ({sortedProducts.length})</Text>
 
         {sortedProducts.map((product) => (
           <ProductCard
@@ -156,9 +186,9 @@ const HomeScreen = () => {
           />
         ))}
 
-        <Text style={styles.sectionTitle}>Blogs</Text>
+        {showBlogs ? <Text style={styles.sectionTitle}>Blogs ({blogs.length})</Text> : null}
 
-        {blogs.map((blog) => (
+        {showBlogs && blogs.map((blog) => (
           <BlogCard
             key={blog.id}
             title={blog.title}
@@ -176,27 +206,70 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f1f5f9',
     paddingTop: 12,
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: '700',
     paddingHorizontal: 20,
-    marginBottom: 12,
+    marginBottom: 10,
+    color: '#0f172a',
+  },
+  controlsCard: {
+    marginHorizontal: 16,
+    marginBottom: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  label: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#334155',
+    marginTop: 2,
+    marginBottom: 0,
   },
   input: {
-    height: 44,
-    marginHorizontal: 20,
-    marginBottom: 16,
+    height: 40,
+    marginBottom: 4,
     borderWidth: 1,
-    borderColor: '#d0d0d0',
-    borderRadius: 10,
+    borderColor: '#cbd5e1',
+    borderRadius: 8,
     paddingHorizontal: 12,
+    backgroundColor: '#f8fafc',
+  },
+  pickerRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  pickerBox: {
+    flex: 1,
+  },
+  picker: {
+    height: 44,
+    backgroundColor: '#f8fafc',
+    borderRadius: 8,
+  },
+  switchRow: {
+    marginTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  switchLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1e293b',
+  },
+  buttonWrap: {
+    marginTop: 6,
   },
   scrollView: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f1f5f9',
     padding: 20,
   },
   sectionTitle: {
@@ -204,6 +277,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 12,
     marginTop: 6,
+    color: '#0f172a',
   },
 });
 
